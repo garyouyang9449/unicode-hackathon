@@ -19,9 +19,9 @@ try:
 except SQLAlchemyError as e:
 	print(e)
 
-createUserTableQuery = "CREATE TABLE users(UserID INTEGER NOT NULL PRIMARY KEY, Email VARCHAR(255), Password VARCHAR(255), FirstName VARCHAR(255), LastName VARCHAR(255), Gender ENUM('Male','Female'), Major VARCHAR(255));"
+createUserTableQuery = "CREATE TABLE users(Email VARCHAR(255) NOT NULL PRIMARY KEY, Password VARCHAR(255), FirstName VARCHAR(255), LastName VARCHAR(255), Gender ENUM('Male','Female'), Major VARCHAR(255));"
 
-createUserToHobbiesTableQuery = "CREATE TABLE user_to_hobbies(UserID INTEGER NOT NULL, HobbyID INTEGER NOT NULL, FOREIGN KEY(UserID) REFERENCES users(UserID),  FOREIGN KEY (HobbyID) REFERENCES hobbies(HobbyID), PRIMARY KEY(UserID, HobbyID))"
+createUserToHobbiesTableQuery = "CREATE TABLE user_to_hobbies(Email VARCHAR(255) NOT NULL, HobbyID INTEGER NOT NULL, FOREIGN KEY(Email) REFERENCES users(Email),  FOREIGN KEY (HobbyID) REFERENCES hobbies(HobbyID), PRIMARY KEY(Email, HobbyID))"
 
 createHobbiesTableQuery = "CREATE TABLE hobbies(HobbyID INTEGER NOT NULL PRIMARY KEY, Hobby VARCHAR(255))"
 
