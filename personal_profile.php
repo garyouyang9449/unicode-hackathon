@@ -1,27 +1,37 @@
 <?php 
+    // connect to the DB
     include('config/connect_db.php');
 
     $email = 'a'; // get this from sign in page
     $password = ''; // get this from sign in page
 
+    // sql query
     $users_query = "SELECT * FROM users WHERE Email = '$email'";
     $hobbies_query = "SELECT Hobby FROM hobbies WHERE HobbyID IN (SELECT HobbyID FROM user_to_hobbies WHERE Email = '$email')";
 
+    // query the DB and fetch results
     $users_result = $conn->query($users_query);
     $hobbies_result = $conn->query($hobbies_query);
     $users = '';
     $hobbies = '';
+
+    // check if connection is valid
     if($users_result) {
+        // fetch result and convert to array of hashmap
         $users = mysqli_fetch_all($users_result, MYSQLI_ASSOC);
     } else {
         echo mysqli_error($conn) . '<br/>';
     }
     
+    // check if connection is valid
     if($hobbies_result) {
+        // fetch result and convert to array of hashmap
         $hobbies = mysqli_fetch_all($hobbies_result, MYSQLI_ASSOC);    
     } else {
         echo mysqli_error($conn) . '<br/>';
     }
+
+    // free memories
     mysqli_free_result($users_result);
     mysqli_free_result($hobbies_result);
     // close connection
