@@ -100,7 +100,7 @@
                 }
             }
 
-            // check if hobby already exists
+            // insert hobby one at a time
             foreach(explode(',', $_POST['hobbies']) as $hobby) {
                 $hobby_select_query = "SELECT 1 FROM hobbies WHERE Hobby = '$hobby'";
                 $hobby_result = $conn->query($hobby_select_query);
@@ -116,18 +116,24 @@
                         $row = mysqli_fetch_row($last_id);
                         $new_id= $row[0] + 1;
                         
+                        // insert new hobby
                         $hobbies_insert_query = "INSERT INTO hobbies(HobbyID, Hobby) VALUES ('$new_id', '$hobby')";
                         if(mysqli_query($conn, $hobbies_insert_query)){
                             echo 'insert hobby success' . '<br/>';
                         } else{
                             echo 'insert to hobby error ' . mysqli_error($conn) . '<br/>';
                         }
+
+                        // build relationship
+                        $relationship_insert_query = "INSERT INTO user_to_hobbies(Email, HobbyID) VALUES('$email', '$new_id')";
+                        if(mysqli_query($conn, $relationship_insert_query)) {
+                            echo 'insert relationship successful <br/>';
+                        } else {
+                            echo 'insert relationship error' . mysqli_error($conn) . '<br/>';
+                        }
                     }
-                }  
+                }
             }
-            
-            // build relationship
-            //$relationship_insert_query = "INSERT INTO user_to_hobbies(Email, HobbyID) VALUES('$Email', )";
         }
     }
     // close connection
