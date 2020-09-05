@@ -13,7 +13,7 @@
             echo "email error <br />";
             $error['email'] = 'email is empty';
         } else {
-            echo htmlspecialchars('emaile is '.$_POST['email']);
+            echo htmlspecialchars('email is '.$_POST['email']);
             $email = $_POST['email'];
         }
         
@@ -70,11 +70,22 @@
             // add data to database
             $email = mysqli_real_escape_string($conn, $_POST['email']);
             $password = mysqli_real_escape_string($conn, $_POST['password']);
-            $insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', 'test', 'test', 'test','major')";
-            if(mysqli_query($conn, $insert_query)) {
-                echo 'success';
+            
+
+            // check if email is unique
+            $select_query = "SELECT COUNT(1) FROM users WHERE Email = '$email'";
+            $result = $conn->query($select_query);
+            
+            if($result->num_rows > 0) {
+                // email already exists
+                echo ". email already exists </ br>";
             } else {
-                echo mysqli_error($conn);
+                $insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', 'test', 'test', 'test','major')";
+                if(mysqli_query($conn, $insert_query)) {
+                    echo 'success';
+                } else {
+                    echo mysqli_error($conn);
+                }
             }
         }
     }
