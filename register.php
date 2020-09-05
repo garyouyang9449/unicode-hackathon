@@ -57,7 +57,7 @@
         <br>
         <br>
         <h4 class="center">Register</h4>
-        <form class="white" action="register.php" method="POST">
+        <form class="white" action="个人简介.html" method="POST">
             <label>Your Email</label>
             <input type="text" name="email">
             <label>Password</label>
