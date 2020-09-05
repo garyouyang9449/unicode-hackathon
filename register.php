@@ -68,6 +68,7 @@
             $error['hobbies'] = 'hobbies is empty';
         } else {
             echo htmlspecialchars('. hobbies is '.$_POST['hobbies']);
+            echo '<br/>';
             $hobbies = $_POST['hobbies'];
         }
 
@@ -80,7 +81,6 @@
             $email = mysqli_real_escape_string($conn, $_POST['email']);
             $password = mysqli_real_escape_string($conn, $_POST['password']);
             
-
             // check if email already exists
             $email_select_query = "SELECT 1 FROM users WHERE Email = '$email'";
             $email_result = $conn->query($email_select_query);
@@ -88,15 +88,15 @@
             // if email does not exist, insert new email
             if($email_result->num_rows > 0) {
                 // email already exists
-                echo ". email already exists " . '<br/>';
+                echo ". email already exists <br/>";
             }
             else {
                 // insert to users table
                 $users_insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', '$firstname', '$lastname', '$gender','$major')";
                 if(mysqli_query($conn, $users_insert_query)) {
-                    echo 'success';
+                    echo 'insert to users table success <br/>';
                 } else {
-                    echo 'insert to users table error '. mysqli_error($conn);
+                    echo 'insert to users table error '. mysqli_error($conn) . '<br/>';
                 }
             }
 
