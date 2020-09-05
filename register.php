@@ -73,20 +73,21 @@
             
 
             // check if email is unique
-            $select_query = "SELECT COUNT(1) FROM users WHERE Email = '$email'";
+            $select_query = "SELECT 1 FROM users WHERE Email = '$email'";
             $result = $conn->query($select_query);
-            
+
             if($result->num_rows > 0) {
                 // email already exists
                 echo ". email already exists </ br>";
-            } else {
-                $insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', 'test', 'test', 'test','major')";
+            }
+            else {
+                $insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', 'test', 'test', 'Male','major')";
                 if(mysqli_query($conn, $insert_query)) {
                     echo 'success';
                 } else {
                     echo mysqli_error($conn);
                 }
-            }
+            }    
         }
     }
 ?>
