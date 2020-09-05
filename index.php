@@ -1,0 +1,13 @@
+<?php 
+	include('config/connect_db.php');
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>hello</title>
+</head>
+<body>
+
+</body>
+</html>
