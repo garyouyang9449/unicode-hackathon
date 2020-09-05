@@ -1,8 +1,31 @@
 <?php 
     include('config/connect_db.php');
+    $email = $password = '';
+    $error = array('email' => '', 'password' => '');
+
     if(isset($_POST['submit'])){
-        echo $_POST['email'] . '<br />';
-        echo $_POST['password'] . '<br />';
+        // check if email field is empty
+        if(empty($_POST['email'])) {
+            echo "email error <br />";
+            $error['email'] = 'email is empty';
+        } else {
+            echo htmlspecialchars($_POST['email']);
+            $email = $_POST['email'];
+        }
+        
+        // check if password field is empty
+        if(empty($_POST['password'])) {
+            echo "password is empty <br />";  
+            $error['password'] = 'password is emtpy';
+        } else {
+            echo htmlspecialchars($_POST['password']);
+            $password = $_POST['password'];
+        }
+        if(array_filter($error)) {
+            echo ' error';
+        } else {
+            echo ' no error';
+        }
     }
 ?>
 
