@@ -2,12 +2,12 @@
     // connect to DB
     include('config/connect_db.php');
 
-    $email = $password = $firstname = $lastname = $gender = $major = '';
+    $email = $password = $firstname = $lastname = $gender = $major = $hobbies = '';
     $error = array('email' => '', 'password' => '', 'firstname' => '',
 'lastname' => '', '$gender' => '', '$major' => ''); // map to store possible error
 
     // check if the user clicked the submit button
-    if(isset($_POST['submit'])){
+    if(isset($_POST['submit'])) {
         // check if email field is empty
         if(empty($_POST['email'])) {
             echo "email error <br />";
@@ -62,34 +62,76 @@
             $major = $_POST['major'];
         }
 
+        // check if hobbies field is empty
+        if(empty($_POST['hobbies'])) {
+            echo "hobbies error <br/>";
+            $error['hobbies'] = 'hobbies is empty';
+        } else {
+            echo htmlspecialchars('. hobbies is '.$_POST['hobbies']);
+            $hobbies = $_POST['hobbies'];
+        }
+
         // check if the error every key in error map has empty value,
         // if not, an error occured
         if(array_filter($error)) {
-            echo ' error';
+            echo 'some error existed <br/>';
         } else {
             // add data to database
             $email = mysqli_real_escape_string($conn, $_POST['email']);
             $password = mysqli_real_escape_string($conn, $_POST['password']);
             
 
-            // check if email is unique
-            $select_query = "SELECT 1 FROM users WHERE Email = '$email'";
-            $result = $conn->query($select_query);
+            // check if email already exists
+            $email_select_query = "SELECT 1 FROM users WHERE Email = '$email'";
+            $email_result = $conn->query($email_select_query);
 
-            if($result->num_rows > 0) {
+            // if email does not exist, insert new email
+            if($email_result->num_rows > 0) {
                 // email already exists
-                echo ". email already exists </ br>";
+                echo ". email already exists " . '<br/>';
             }
             else {
-                $insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', 'test', 'test', 'Male','major')";
-                if(mysqli_query($conn, $insert_query)) {
+                // insert to users table
+                $users_insert_query = "INSERT INTO users(Email, Password, FirstName, LastName, Gender, Major) VALUES ('$email', '$password', '$firstname', '$lastname', '$gender','$major')";
+                if(mysqli_query($conn, $users_insert_query)) {
                     echo 'success';
                 } else {
-                    echo mysqli_error($conn);
+                    echo 'insert to users table error '. mysqli_error($conn);
                 }
-            }    
+            }
+
+            // check if hobby already exists
+            foreach(explode(',', $_POST['hobbies']) as $hobby) {
+                $hobby_select_query = "SELECT 1 FROM hobbies WHERE Hobby = '$hobby'";
+                $hobby_result = $conn->query($hobby_select_query);
+                
+                // check if connection is successful
+                if($hobby_result) {
+                    // if hobby does not exist, insert new hobby
+                    if($hobby_result->num_rows > 0) {
+                        echo ". hobby already exists <br/>";
+                    } else {
+                        // get the last insert hobbyID
+                        $last_id = mysqli_query($conn, "SELECT MAX(HobbyID) FROM hobbies");
+                        $row = mysqli_fetch_row($last_id);
+                        $new_id= $row[0] + 1;
+                        
+                        $hobbies_insert_query = "INSERT INTO hobbies(HobbyID, Hobby) VALUES ('$new_id', '$hobby')";
+                        if(mysqli_query($conn, $hobbies_insert_query)){
+                            echo 'insert hobby success' . '<br/>';
+                        } else{
+                            echo 'insert to hobby error ' . mysqli_error($conn) . '<br/>';
+                        }
+                    }
+                }  
+            }
+            
+            // build relationship
+            //$relationship_insert_query = "INSERT INTO user_to_hobbies(Email, HobbyID) VALUES('$Email', )";
         }
     }
+    // close connection
+    mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -109,6 +151,8 @@
             <input type="text" name="gender">
             <label>Major</label>
             <input type="text" name="major">
+            <label>Hobbies (Comma Separated)</label>
+            <input type="text" name="hobbies">
             <div class="center">
                 <input type="submit" name="submit" value="Submit" class="btn brand z-depth-0">
             </div>
